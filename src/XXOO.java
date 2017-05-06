@@ -1,8 +1,5 @@
-package MyClass;
-
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 public final class XXOO {
 
@@ -16,16 +13,27 @@ public final class XXOO {
 
     private final int width;
     private final int height;
+    private String winner = null;
+
+    public Map<Cell, Move> getMoves() {
+        return moves;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
     private final Map<Cell, Move> moves = new HashMap<>();
     private Move turn = Move.X;
     private String player1;
     private String player2;
 
-    public XXOO(int width, int height) {
-        assert (width > 0);
-        assert (height > 0);
+
+    public XXOO(int width, int height, String player1, String player2) {
         this.width = width;
         this.height = height;
+        this.player1 = player1;
+        this.player2 = player2;
     }
 
     private final static class Cell {
@@ -69,12 +77,12 @@ public final class XXOO {
 
     public void makeTurn(int x, int y) {
         Cell cell = new Cell(x, y);
-        if (Move.X.equals(get(x, y)) || Move.O.equals(get(x, y)))
+        if (get(x, y) != null)
             throw new IllegalArgumentException("Эта ячейка уже занята, попробуйте другую!");
-        if (x < 0 || x >= width) throw new IllegalArgumentException("x должен быть не меньше 0 и не больше " + width);
-        if (y < 0 || y >= height) throw new IllegalArgumentException("у должен быть не меньше 0 и не больше " + height);
+        if (x < 0 || x >= width) throw new IllegalArgumentException("x должен быть не меньше 0 и меньше " + width);
+        if (y < 0 || y >= height) throw new IllegalArgumentException("у должен быть не меньше 0 и меньше " + height);
         moves.put(cell, turn);
-        theLongestLine(turn);
+        gettWinner();
         turn = turn.opposite();
     }
 
@@ -85,49 +93,48 @@ public final class XXOO {
         moves.put(cell, null);
     }
 
-    public String theLongestLine(Move move) {
-        int winner = 0;
+    Move move = Move.O;
+
+    public void gettWinner() {
+        move = move.opposite();
+        int win = 0;
         //ищу победителя в строчках
-        int x = 0;
-        while (x < width) {
+        for (int x = 0; x < width; x++) {
             int count = 0;
             for (int y = 0; y < height; y++) {
                 Cell cell = new Cell(x, y);
                 if (move.equals(get(x, y))) count++;
             }
-            if (count == width) winner++;
-            x++;
+            if (count == width) win++;
         }
         // ищу победителя в столбцах
-        int y = 0;
-        while (y < height) {
+        for (int y = 0; y < height; y++) {
             int count = 0;
-            for (x = 0; x < width; x++) {
+            for (int x = 0; x < width; x++) {
                 Cell cell = new Cell(x, y);
                 if (move.equals(get(x, y))) count++;
             }
-            if (count == width) winner++;
-            y++;
+            if (count == width) win++;
         }
         //ищу победителя в главной диагонали
         int count = 0;
-        for (x = 0; x < width; x++) {
-            y = x;
+        for (int x = 0; x < width; x++) {
+            int y = x;
             Cell cell = new Cell(x, y);
             if (move.equals(get(x, y))) count++;
         }
-        if (count == width) winner++;
+        if (count == width) win++;
         //ищу победителя в побочнй диагонали
         count = 0;
-        for (x = 0; x < width; x++) {
-            y = width - 1 - x;
+        for (int x = 0; x < width; x++) {
+            int y = width - 1 - x;
             Cell cell = new Cell(x, y);
             if (move.equals(get(x, y))) count++;
         }
-        if (count == width) winner++;
-        if (winner > 0 && move.equals(Move.X)) return player1;
-        if (winner > 0 && move.equals(Move.O)) return player2;
-        return "";
+        if (count == width) win++;
+        if (win > 0 && move.equals(Move.X)) winner = player1;
+        if (win > 0 && move.equals(Move.O)) winner = player2;
+
     }
 
     @Override
@@ -162,24 +169,5 @@ public final class XXOO {
         int result = width;
         result = 17 * result + height;
         return result;
-    }
-
-    // ввод имён игроков, не знаю, если надо
-    private void name(int player) {
-        Scanner in = new Scanner(System.in);
-        String Name = in.nextLine();
-        if (Name.isEmpty()) {
-            throw new IllegalArgumentException("Имя не может быть пустым");
-        } else {
-            if (player == 1) player1 = Name;
-            if (player == 2) player2 = Name;
-        }
-    }
-//получаю номер ячейки, которую потом в основной программе преобразую в координаты клетки
-    private void Turn() {
-        int flag;
-        Scanner in = new Scanner(System.in);
-        String Flag = in.nextLine();
-        flag = Integer.parseInt(Flag);
     }
 }
