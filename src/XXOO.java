@@ -5,7 +5,6 @@ public final class XXOO {
 
     public enum Move {
         X, O;
-
         public Move opposite() {
             return this == X ? O : X;
         }
@@ -63,16 +62,12 @@ public final class XXOO {
         }
     }
 
-    public Move get(int x, int y) {
+    private Move get(int x, int y) {
         return get(new Cell(x, y));
     }
 
     private Move get(Cell cell) {
         return moves.get(cell);
-    }
-
-    public Move getMove() {
-        return turn;
     }
 
     public void makeTurn(int x, int y) {
@@ -82,7 +77,7 @@ public final class XXOO {
         if (x < 0 || x >= width) throw new IllegalArgumentException("x должен быть не меньше 0 и меньше " + width);
         if (y < 0 || y >= height) throw new IllegalArgumentException("у должен быть не меньше 0 и меньше " + height);
         moves.put(cell, turn);
-        gettWinner();
+        Winner();
         turn = turn.opposite();
     }
 
@@ -93,9 +88,9 @@ public final class XXOO {
         moves.put(cell, null);
     }
 
-    Move move = Move.O;
+    private Move move = Move.O;
 
-    public void gettWinner() {
+    public void Winner() {
         move = move.opposite();
         int win = 0;
         //ищу победителя в строчках

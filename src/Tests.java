@@ -1,6 +1,5 @@
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class Tests {
     @Test
@@ -12,7 +11,7 @@ public class Tests {
         field.makeTurn(2,1);
         field.makeTurn(1,0);
         field.makeTurn(2,2);
-        field.gettWinner();
+        field.Winner();
 
     }
 }
