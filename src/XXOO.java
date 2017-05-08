@@ -77,7 +77,7 @@ public final class XXOO {
         if (x < 0 || x >= width) throw new IllegalArgumentException("x должен быть не меньше 0 и меньше " + width);
         if (y < 0 || y >= height) throw new IllegalArgumentException("у должен быть не меньше 0 и меньше " + height);
         moves.put(cell, turn);
-        Winner();
+        whoIsWinner();
         turn = turn.opposite();
     }
 
@@ -90,7 +90,7 @@ public final class XXOO {
 
     private Move move = Move.O;
 
-    public void Winner() {
+    private void whoIsWinner() {
         move = move.opposite();
         int win = 0;
         //ищу победителя в строчках
